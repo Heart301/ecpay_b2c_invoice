@@ -66,6 +66,89 @@ else
 end
 ```
 
+### Query Government Invoice Word Settings (查詢財政部配號結果)
+
+```ruby
+client = Ecpay::B2CInvoice::Client.new
+
+# Query allocation results from Ministry of Finance
+result = client.get_gov_invoice_word_setting("113") # Taiwan year format
+
+if result[:success]
+  puts "Government allocation found!"
+  puts result[:data]
+else
+  puts "Error: #{result[:error]}"
+end
+```
+
+### Add Invoice Word Setting (字軌與配號設定)
+
+```ruby
+client = Ecpay::B2CInvoice::Client.new
+
+setting_data = {
+  InvoiceTerm: 1,           # Invoice period (1-6)
+  InvoiceYear: "113",       # Taiwan year format
+  InvType: "07",           # Invoice type
+  InvoiceCategory: 1,       # Fixed as 1 for B2C
+  InvoiceHeader: "AA",      # Invoice track header
+  InvoiceStart: "00000000", # Start number (must end in 00 or 50)
+  InvoiceEnd: "00000049"    # End number (must end in 49 or 99)
+}
+
+result = client.add_invoice_word_setting(setting_data)
+
+if result[:success]
+  puts "Track setting added successfully!"
+  puts "Track ID: #{result[:data]['TrackID']}"
+else
+  puts "Error: #{result[:error]}"
+end
+```
+
+### Update Invoice Word Status (設定字軌號碼狀態)
+
+```ruby
+client = Ecpay::B2CInvoice::Client.new
+
+track_id = "your_track_id"
+invoice_status = 2  # 0=Disabled, 1=Paused, 2=Enabled
+
+result = client.update_invoice_word_status(track_id, invoice_status)
+
+if result[:success]
+  puts "Track status updated successfully!"
+else
+  puts "Error: #{result[:error]}"
+end
+```
+
+### Query Invoice Word Settings (查詢字軌)
+
+```ruby
+client = Ecpay::B2CInvoice::Client.new
+
+query_data = {
+  MerchantID: "your_merchant_id",
+  InvoiceYear: "113",      # Taiwan year format
+  InvoiceTerm: 0,          # 0 for all terms, 1-6 for specific term
+  UseStatus: 0,            # 0 for all status, 1-6 for specific status
+  InvoiceCategory: 4       # Fixed as 4 for query
+}
+
+result = client.get_invoice_word_setting(query_data)
+
+if result[:success]
+  puts "Track settings found!"
+  result[:data]['InvoiceInfo'].each do |track|
+    puts "Track: #{track['InvoiceHeader']}, Status: #{track['UseStatus']}"
+  end
+else
+  puts "Error: #{result[:error]}"
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

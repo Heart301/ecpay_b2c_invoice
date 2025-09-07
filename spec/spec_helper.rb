@@ -33,4 +33,15 @@ RSpec.configure do |config|
   config.before(:each) do
     Ecpay::B2CInvoice.configuration = Ecpay::B2CInvoice::Configuration.new
   end
+
+  config.around(:each, :integration) do |example|
+    WebMock.disable_net_connect!(allow_localhost: false)
+    WebMock.reset!
+    WebMock.disable!
+    
+    example.run
+    
+    WebMock.enable!
+    WebMock.stub_request(:any, /.*/)
+  end
 end
