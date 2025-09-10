@@ -12,13 +12,12 @@ module Ecpay
         self.class.base_uri @config.api_url
       end
 
+      # 發票作業 ／ 開立發票 / 一般開立發票
       def create_invoice(invoice_data)
-        timestamp = Encryption.generate_timestamp
-        
         request_data = {
           MerchantID: @config.merchant_id,
           RqHeader: {
-            Timestamp: timestamp.to_i
+            Timestamp: Time.current.to_i
           },
           Data: Encryption.encrypt_data(invoice_data, @config.hash_key, @config.hash_iv)
         }
@@ -34,9 +33,8 @@ module Ecpay
         parse_response(response)
       end
 
+      # 前置作業／查詢財政部配號結果
       def get_gov_invoice_word_setting(invoice_year)
-        timestamp = Encryption.generate_timestamp
-        
         data = {
           MerchantID: @config.merchant_id,
           InvoiceYear: invoice_year
@@ -45,7 +43,7 @@ module Ecpay
         request_data = {
           MerchantID: @config.merchant_id,
           RqHeader: {
-            Timestamp: timestamp.to_i
+            Timestamp: Time.current.to_i
           },
           Data: Encryption.encrypt_data(data, @config.hash_key, @config.hash_iv)
         }
@@ -61,13 +59,12 @@ module Ecpay
         parse_response(response)
       end
 
+      # 前置作業／字軌與配號設定
       def add_invoice_word_setting(setting_data)
-        timestamp = Encryption.generate_timestamp
-        
         request_data = {
           MerchantID: @config.merchant_id,
           RqHeader: {
-            Timestamp: timestamp.to_i
+            Timestamp: Time.current.to_i
           },
           Data: Encryption.encrypt_data(setting_data, @config.hash_key, @config.hash_iv)
         }
@@ -83,9 +80,8 @@ module Ecpay
         parse_response(response)
       end
 
+      # 前置作業／設定字軌號碼狀態
       def update_invoice_word_status(track_id, invoice_status)
-        timestamp = Encryption.generate_timestamp
-        
         data = {
           TrackID: track_id,
           InvoiceStatus: invoice_status
@@ -94,7 +90,7 @@ module Ecpay
         request_data = {
           MerchantID: @config.merchant_id,
           RqHeader: {
-            Timestamp: timestamp.to_i
+            Timestamp: Time.current.to_i
           },
           Data: Encryption.encrypt_data(data, @config.hash_key, @config.hash_iv)
         }
@@ -110,13 +106,12 @@ module Ecpay
         parse_response(response)
       end
 
+      # 前置作業／查詢字軌
       def get_invoice_word_setting(query_data)
-        timestamp = Encryption.generate_timestamp
-        
         request_data = {
           MerchantID: @config.merchant_id,
           RqHeader: {
-            Timestamp: timestamp.to_i
+            Timestamp: Time.current.to_i
           },
           Data: Encryption.encrypt_data(query_data, @config.hash_key, @config.hash_iv)
         }
@@ -138,7 +133,7 @@ module Ecpay
         return { error: "HTTP Error: #{response.code}" } unless response.success?
 
         body = response.parsed_response
-        
+
         if body["Data"]
           decrypted_data = Encryption.decrypt_data(body["Data"], @config.hash_key, @config.hash_iv)
           {
