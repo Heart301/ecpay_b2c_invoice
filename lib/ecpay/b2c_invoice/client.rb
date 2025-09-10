@@ -13,11 +13,11 @@ module Ecpay
       end
 
       # 發票作業 ／ 開立發票 / 一般開立發票
-      def create_invoice(invoice_data)
+      def issue_invoice(invoice_data)
         request_data = {
           MerchantID: @config.merchant_id,
           RqHeader: {
-            Timestamp: Time.current.to_i
+            Timestamp: Time.now.to_i
           },
           Data: Encryption.encrypt_data(invoice_data, @config.hash_key, @config.hash_iv)
         }
@@ -43,7 +43,7 @@ module Ecpay
         request_data = {
           MerchantID: @config.merchant_id,
           RqHeader: {
-            Timestamp: Time.current.to_i
+            Timestamp: Time.now.to_i
           },
           Data: Encryption.encrypt_data(data, @config.hash_key, @config.hash_iv)
         }
@@ -59,12 +59,12 @@ module Ecpay
         parse_response(response)
       end
 
-      # 前置作業／字軌與配號設定
+      # 前置作業／字軌與配號設定 (新增字軌)
       def add_invoice_word_setting(setting_data)
         request_data = {
           MerchantID: @config.merchant_id,
           RqHeader: {
-            Timestamp: Time.current.to_i
+            Timestamp: Time.now.to_i
           },
           Data: Encryption.encrypt_data(setting_data, @config.hash_key, @config.hash_iv)
         }
@@ -90,7 +90,7 @@ module Ecpay
         request_data = {
           MerchantID: @config.merchant_id,
           RqHeader: {
-            Timestamp: Time.current.to_i
+            Timestamp: Time.now.to_i
           },
           Data: Encryption.encrypt_data(data, @config.hash_key, @config.hash_iv)
         }
@@ -111,7 +111,7 @@ module Ecpay
         request_data = {
           MerchantID: @config.merchant_id,
           RqHeader: {
-            Timestamp: Time.current.to_i
+            Timestamp: Time.now.to_i
           },
           Data: Encryption.encrypt_data(query_data, @config.hash_key, @config.hash_iv)
         }
@@ -130,7 +130,7 @@ module Ecpay
       private
 
       def parse_response(response)
-        return { error: "HTTP Error: #{response.code}" } unless response.success?
+        return { error: "HTTP Error: #{response.code}", status_code: response.code } unless response.success?
 
         body = response.parsed_response
 
@@ -146,7 +146,8 @@ module Ecpay
           {
             success: false,
             error: body["TransMsg"] || "Unknown error",
-            trans_code: body["TransCode"]
+            trans_code: body["TransCode"],
+            status_code: response.code
           }
         end
       rescue JSON::ParserError

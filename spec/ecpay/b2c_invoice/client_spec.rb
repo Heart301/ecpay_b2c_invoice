@@ -57,9 +57,9 @@ RSpec.describe Ecpay::B2CInvoice::Client do
     end
   end
 
-  describe "#create_invoice", :integration do
+  describe "#issue_invoice", :integration do
     it "sends request to ECPay API and receives response" do
-      result = client.create_invoice(invoice_data)
+      result = client.issue_invoice(invoice_data)
 
       puts "\n=== API Response ==="
       puts "Success: #{result[:success]}"
@@ -102,7 +102,7 @@ RSpec.describe Ecpay::B2CInvoice::Client do
         Donation: "0"
       }
 
-      result = client.create_invoice(minimal_data)
+      result = client.issue_invoice(minimal_data)
 
       puts "\n=== Minimal Data Response ==="
       puts "Success: #{result[:success]}"

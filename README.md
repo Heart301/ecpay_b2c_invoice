@@ -55,7 +55,7 @@ invoice_data = {
   Donation: "0"
 }
 
-result = client.create_invoice(invoice_data)
+result = client.issue_invoice(invoice_data)
 
 if result[:success]
   puts "Invoice created successfully!"
