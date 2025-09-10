@@ -149,6 +149,33 @@ else
 end
 ```
 
+### Get Invoice Print URL (取得發票列印網址)
+
+```ruby
+client = Ecpay::B2CInvoice::Client.new
+
+invoice_no = "AA12345678"    # 10-character invoice number
+invoice_date = "2026/01/01"  # Invoice date 格式為 yyyy-MM-dd 或 yyyy/MM/dd
+
+# Basic usage with default options
+result = client.get_invoice_print_url(invoice_no, invoice_date)
+
+# With custom print options
+result = client.get_invoice_print_url(
+  invoice_no,
+  invoice_date,
+  print_style: 1,
+  is_showing_detail: 1
+)
+
+if result[:success]
+  puts "Invoice print URL retrieved!"
+  puts "Print URL: #{result[:data]['InvoiceHtml']}"
+else
+  puts "Error: #{result[:error]}"
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

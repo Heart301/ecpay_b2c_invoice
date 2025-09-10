@@ -205,4 +205,46 @@ RSpec.describe Ecpay::B2CInvoice::Client do
       expect(result.keys).not_to be_empty
     end
   end
+
+  describe "#get_invoice_print_url", :integration do
+    it "gets invoice print URL" do
+      invoice_no = "AA12345678"
+      invoice_date = "2024/01/01"
+
+      result = client.get_invoice_print_url(invoice_no, invoice_date)
+
+      puts "\n=== Get Invoice Print URL Response ==="
+      puts "Success: #{result[:success]}"
+      puts "Trans Code: #{result[:trans_code]}"
+      puts "Trans Message: #{result[:trans_msg]}"
+      puts "Data: #{result[:data]}" if result[:data]
+      puts "Error: #{result[:error]}" if result[:error]
+      puts "====================================="
+
+      expect(result).to be_a(Hash)
+      expect(result.keys).not_to be_empty
+    end
+
+    it "gets invoice print URL with custom options" do
+      invoice_no = "AA12345678"
+      invoice_date = "2024/01/01"
+      print_style = 1
+      is_showing_detail = 1
+
+      result = client.get_invoice_print_url(invoice_no, invoice_date, 
+                                         print_style: print_style, 
+                                         is_showing_detail: is_showing_detail)
+
+      puts "\n=== Get Invoice Print URL (Custom Options) Response ==="
+      puts "Success: #{result[:success]}"
+      puts "Trans Code: #{result[:trans_code]}"
+      puts "Trans Message: #{result[:trans_msg]}"
+      puts "Data: #{result[:data]}" if result[:data]
+      puts "Error: #{result[:error]}" if result[:error]
+      puts "===================================================="
+
+      expect(result).to be_a(Hash)
+      expect(result.keys).not_to be_empty
+    end
+  end
 end
