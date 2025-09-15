@@ -2,6 +2,8 @@
 
 Ruby client library for ECPay B2C electronic invoice API integration.
 
+最新規格請參考官方文件：[https://developers.ecpay.com.tw/?p=7809](https://developers.ecpay.com.tw/?p=7809)
+
 ## Installation
 
 Add this line to your application's Gemfile:
